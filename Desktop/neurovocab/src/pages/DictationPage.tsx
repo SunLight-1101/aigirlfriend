@@ -26,15 +26,16 @@ export const DictationPage: React.FC = () => {
   const displayTotal = todayWords.length + retryQueue.length;
   const displayProgress = completed + (isRetry ? todayWords.length : 0);
 
+  // 只有在进入新单词时才自动播放和重置状态
   useEffect(() => {
-    setShowResult(false);
-    setUserInput('');
-    setIsRetry(retryQueue.length > 0 && currentIndex === 0);
-    // 自动播放发音
-    if (currentWord) {
+    if (currentWord && !showResult) {
+      setShowResult(false);
+      setUserInput('');
+      setIsRetry(retryQueue.length > 0 && currentIndex === 0);
+      // 自动播放发音
       autoSpeak(currentWord.word);
     }
-  }, [currentWord, retryQueue, currentIndex, autoSpeak]);
+  }, [currentWord, retryQueue, currentIndex, showResult, autoSpeak]);
 
   const handleReplay = () => {
     playSound('click');
@@ -68,11 +69,13 @@ export const DictationPage: React.FC = () => {
   };
 
   const handleNext = () => {
-    console.log('handleNext called, currentWord:', currentWord?.word);
+    console.log('handleNext CLICKED! showResult:', showResult, 'currentWord:', currentWord?.word, 'isRetry:', isRetry);
     playSound('click');
     setShowResult(false);
     setUserInput('');
+    console.log('Calling nextWord...');
     nextWord();
+    console.log('nextWord() returned, new showResult should be false');
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
