@@ -1,0 +1,329 @@
+@import "tailwindcss";
+
+/* 赛博朋克主题配置 */
+@theme {
+  --color-cyber-black: #050505;
+  --color-cyber-pink: #ff00ff;
+  --color-cyber-cyan: #00ffff;
+  --color-cyber-green: #00ff00;
+  --color-cyber-dark: #0a0a0a;
+  --color-cyber-gray: #1a1a1a;
+
+  --font-mono: "Courier New", Courier, monospace;
+
+  --animate-glitch: glitch 1s linear infinite;
+  --animate-scanline: scanline 8s linear infinite;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes glitch {
+  2%, 64% { transform: translate(2px,0) skew(0deg); }
+  4%, 60% { transform: translate(-2px,0) skew(0deg); }
+  62% { transform: translate(0,0) skew(5deg); }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; }
+  50% { box-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff; }
+}
+
+/* 全局样式 */
+body {
+  @apply bg-cyber-black text-cyber-cyan font-mono min-h-screen;
+}
+
+/* 赛博朋克扫描线效果 */
+.cyber-scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  z-index: 9999;
+}
+
+.cyber-glow-pink {
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+}
+
+.cyber-glow-cyan {
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+}
+
+.cyber-glow-green {
+  box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+}
+
+.cyber-border-pink {
+  border: 1px solid #ff00ff;
+  box-shadow: inset 0 0 10px rgba(255, 0, 255, 0.3);
+}
+
+.cyber-border-cyan {
+  border: 1px solid #00ffff;
+  box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.cyber-grid {
+  background-image:
+    linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* 故障效果文本 */
+.glitch-text {
+  position: relative;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 #ff00ff;
+  clip-path: inset(44% 0 61% 0);
+  animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 #00ffff;
+  clip-path: inset(54% 0 32% 0);
+  animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% { clip-path: inset(10% 0 90% 0); }
+  20% { clip-path: inset(50% 0 20% 0); }
+  40% { clip-path: inset(70% 0 10% 0); }
+  60% { clip-path: inset(20% 0 60% 0); }
+  80% { clip-path: inset(40% 0 40% 0); }
+  100% { clip-path: inset(80% 0 5% 0); }
+}
+
+/* 毛玻璃效果 - 精致版赛博朋克 */
+.glass-card {
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-card-cyan {
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(0, 255, 255, 0.1),
+    inset 0 1px 0 rgba(0, 255, 255, 0.15);
+}
+
+.glass-card-pink {
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 0, 255, 0.25);
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(255, 0, 255, 0.1),
+    inset 0 1px 0 rgba(255, 0, 255, 0.15);
+}
+
+.glass-card-green {
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(0, 255, 0, 0.25);
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(0, 255, 0, 0.1),
+    inset 0 1px 0 rgba(0, 255, 0, 0.15);
+}
+
+.glass-card-holo {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 255, 0.08) 0%,
+    rgba(255, 0, 255, 0.08) 50%,
+    rgba(0, 255, 0, 0.08) 100%
+  );
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(0, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 高对比度文本 - 确保可读性 */
+.text-high-contrast {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.text-cyan-high {
+  color: #00ffff;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+.text-pink-high {
+  color: #ff00ff;
+  text-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+}
+
+/* 搭配标签样式 */
+.collocation-tag {
+  background: rgba(0, 255, 255, 0.08);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.collocation-tag:hover {
+  background: rgba(0, 255, 255, 0.15);
+  border-color: rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+/* ===== 移动端优化 ===== */
+
+/* 移动端按钮增大触摸区域 */
+@media (max-width: 768px) {
+  .mobile-touch-target {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px 16px;
+  }
+
+  .mobile-touch-target-lg {
+    min-height: 56px;
+    min-width: 56px;
+    padding: 14px 20px;
+  }
+
+  /* 移动端文字大小调整 */
+  body {
+    font-size: 16px;
+  }
+
+  .mobile-text-sm {
+    font-size: 14px;
+  }
+
+  .mobile-text-base {
+    font-size: 16px;
+  }
+
+  .mobile-text-lg {
+    font-size: 18px;
+  }
+
+  .mobile-text-xl {
+    font-size: 20px;
+  }
+
+  .mobile-text-2xl {
+    font-size: 24px;
+  }
+
+  .mobile-text-3xl {
+    font-size: 28px;
+  }
+
+  /* 移动端卡片内边距优化 */
+  .glass-card,
+  .glass-card-cyan,
+  .glass-card-pink,
+  .glass-card-green,
+  .glass-card-holo {
+    padding: 12px;
+  }
+
+  /* 移动端网格改为单列 */
+  .mobile-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* 移动端按钮堆叠 */
+  .mobile-stack {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  /* 移动端底部导航 */
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(5, 5, 5, 0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+    padding: 12px;
+    z-index: 1000;
+  }
+
+  /* 移动端全屏高度 */
+  .min-h-screen-mobile {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* 移动端进度条高度优化 */
+  .mobile-progress {
+    height: 8px;
+  }
+
+  /* 移动端输入框增大 */
+  input[type="text"],
+  input[type="number"],
+  select {
+    min-height: 48px;
+    font-size: 16px; /* 防止iOS自动缩放 */
+  }
+}
+
+/* 移动端竖屏优化 */
+@media (max-width: 480px) {
+  .mobile-text-4xl {
+    font-size: 32px;
+  }
+
+  .mobile-text-5xl {
+    font-size: 36px;
+  }
+
+  .mobile-text-6xl {
+    font-size: 40px;
+  }
+}
