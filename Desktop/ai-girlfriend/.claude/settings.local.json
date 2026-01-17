@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where python:*)",
+      "Bash(\"C:\\\\Users\\\\s2004\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\python.exe\" -m pip install anthropic python-dotenv)",
+      "Bash(where python3:*)",
+      "Bash(powershell -Command \"python3 -m pip install anthropic python-dotenv\")"
+    ]
+  }
+}
