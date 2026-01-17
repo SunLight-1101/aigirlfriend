@@ -115,6 +115,18 @@ def process_ai_reply(user_id, user_input):
                 print(f"[WeChat] 恢复用户 {user_id}: {user['name']}")
             else:
                 user_states[user_id] = {"state": WAITING_START, "name": None, "personality": None, "agent": None}
+        else:
+            # 用户状态已存在，但可能是刚关注恢复的，检查是否需要从 existing_users 恢复
+            state = user_states[user_id]
+            if state["agent"] is None and state["name"] is None and user_id in existing_users:
+                user = existing_users[user_id]
+                user_states[user_id] = {
+                    "state": CHATTING,
+                    "name": user["name"],
+                    "personality": user["personality"],
+                    "agent": None
+                }
+                print(f"[WeChat] 恢复用户 {user_id}: {user['name']}")
 
         state = user_states[user_id]["state"]
 
@@ -205,7 +217,7 @@ def handle_text(message):
     thread.start()
 
     # 秒回正在输入
-    return "💕"
+    return "💕正在思考中······💕"
 
 
 @robot.subscribe
