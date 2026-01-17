@@ -1,9 +1,9 @@
 """
 简单版 AI Agent - 支持自定义角色
+使用新的 google.genai API
 """
 import os
-import time
-import google.generativeai as genai
+from google.genai import types, Client
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,21 +24,7 @@ class AICustomAgent:
         if not self.api_key:
             raise ValueError("未找到 GOOGLE_API_KEY")
 
-        genai.configure(api_key=self.api_key)
-
         print(f"[Agent] 正在为「{name}」初始化 Gemini...")
-
-        safety_settings = [
-            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
-        ]
-
-        self.model = genai.GenerativeModel(
-            model_name="gemma-3-27b-it",
-            safety_settings=safety_settings
-        )
 
         # 构建 System Prompt
         system_prompt = f"""【核心设定】
@@ -85,19 +71,77 @@ class AICustomAgent:
 
 现在开始聊天！你是「{name}」，你是用户的女朋友！"""
 
-        # 通过 history 注入人设
-        self.chat_session = self.model.start_chat(history=[
-            {"role": "user", "parts": [system_prompt]},
-            {"role": "model", "parts": [f"哼，我才不是什么米彩呢！我叫「{name}」！😤 你再乱叫我就不理你了！"]}
-        ])
+        # 创建客户端
+        self.client = Client(api_key=self.api_key)
 
+        # 构建初始消息
+        contents = [
+            types.Content(
+                role="user",
+                parts=[types.Part(text=system_prompt)]
+            ),
+            types.Content(
+                role="model",
+                parts=[types.Part(text=f"哼，我才不是什么米彩呢！我叫「{name}」！😤 你再乱叫我就不理你了！")]
+            )
+        ]
+
+        self.history = contents
         print(f"[Agent] ✅ 「{name}」已就绪！")
 
     def chat(self, user_input: str) -> str:
         """发送消息给 AI 并获取回复"""
         try:
-            response = self.chat_session.send_message(user_input)
-            return response.text.strip()
+            # 添加用户消息到历史
+            self.history.append(
+                types.Content(
+                    role="user",
+                    parts=[types.Part(text=user_input)]
+                )
+            )
+
+            # 调用 API
+            response = self.client.models.generate_content(
+                model="gemma-3-27b-it",
+                contents=self.history,
+                config=types.GenerateContentConfig(
+                    safety_settings=[
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_HARASSMENT",
+                            threshold="BLOCK_NONE"
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_HATE_SPEECH",
+                            threshold="BLOCK_NONE"
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                            threshold="BLOCK_NONE"
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_DANGEROUS_CONTENT",
+                            threshold="BLOCK_NONE"
+                        ),
+                    ],
+                    max_output_tokens=200,
+                    temperature=0.7
+                )
+            )
+
+            # 获取回复
+            if response.text:
+                reply = response.text.strip()
+                # 添加模型回复到历史
+                self.history.append(
+                    types.Content(
+                        role="model",
+                        parts=[types.Part(text=reply)]
+                    )
+                )
+                return reply
+
+            return "（没有收到有效回复）"
+
         except Exception as e:
             err_msg = str(e)
             print(f"[Agent Error] {err_msg}")

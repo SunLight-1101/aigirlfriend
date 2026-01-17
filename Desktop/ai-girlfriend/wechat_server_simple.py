@@ -81,13 +81,9 @@ config = Config(
 
 robot = werobot.WeRoBot(config=config)
 
-# 配置代理
-import requests
-proxies = {
-    "http": "http://127.0.0.1:7890",
-    "https": "http://127.0.0.1:7890",
-}
-robot.client.session.proxies = proxies
+# 配置代理 - 使用环境变量
+os.environ["HTTP_PROXY"] = "http://127.0.0.1:7890"
+os.environ["HTTPS_PROXY"] = "http://127.0.0.1:7890"
 
 
 def get_user_agent(user_id, name=None, personality=None):
