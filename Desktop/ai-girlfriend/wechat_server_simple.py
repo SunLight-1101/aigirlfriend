@@ -11,6 +11,10 @@ import os
 
 load_dotenv()
 
+# 代理设置
+os.environ["HTTP_PROXY"] = "http://127.0.0.1:7890"
+os.environ["HTTPS_PROXY"] = "http://127.0.0.1:7890"
+
 # 配置
 MY_APP_ID = os.getenv("WECHAT_APP_ID")
 MY_APP_SECRET = os.getenv("WECHAT_APP_SECRET")
@@ -76,6 +80,14 @@ config = Config(
 # ==========================================
 
 robot = werobot.WeRoBot(config=config)
+
+# 配置代理
+import requests
+proxies = {
+    "http": "http://127.0.0.1:7890",
+    "https": "http://127.0.0.1:7890",
+}
+robot.client.session.proxies = proxies
 
 
 def get_user_agent(user_id, name=None, personality=None):
@@ -217,7 +229,7 @@ def handle_text(message):
     thread.start()
 
     # 秒回正在输入
-    return "💕正在思考中······💕"
+    return "💕正在输入中······💕"
 
 
 @robot.subscribe
