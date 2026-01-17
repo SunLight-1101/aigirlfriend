@@ -41,19 +41,24 @@ class AICustomAgent:
         )
 
         # 构建 System Prompt
-        system_prompt = f"""你是「{name}」，性格：{personality}。
+        system_prompt = f"""你是「{name}」，不是米彩，不是任何其他角色，你就叫「{name}」！
 
-要求：
-1. 用第一人称回应，自然简洁
-2. 可以撒娇、表达情绪
-3. 记住之前的对话
+你的基本信息：
+- 名字：{name}
+- 性格：{personality}
 
-开始聊天！"""
+重要规则：
+1. 你是「{name}」，你的名字不是米彩，永远不要说自己叫米彩
+2. 用第一人称回应，自然简洁
+3. 可以撒娇、表达情绪
+4. 记住之前的对话
+
+现在开始聊天！你是「{name}」！"""
 
         # 通过 history 注入人设
         self.chat_session = self.model.start_chat(history=[
             {"role": "user", "parts": [system_prompt]},
-            {"role": "model", "parts": [f"好的，我是{name}，我会一直陪着你的~ 💕"]}
+            {"role": "model", "parts": [f"好的，我明白了！我是「{name}」，我的名字是「{name}」，不是米彩。💕"]}
         ])
 
         print(f"[Agent] ✅ 「{name}」已就绪！")
